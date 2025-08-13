@@ -1,0 +1,34 @@
+name: tests
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        # Keep this in sync with tox.ini
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        platform: [ubuntu-20.04, macos-13, windows-2019]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        id: setup-py
+        with:
+          python-version: ${{ matrix.python-version }}
+          allow-prereleases: true
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '5.15.2'
+      - name: Install dependencies
+        run: |
+          ${{ steps.setup-py.outputs.python-path }} -m pip install --upgrade pip setuptools wheel
+          ${{ steps.setup-py.outputs.python-path }} -m pip install tox tox-gh-actions
+      - name: Run tests
+        run: ${{ steps.setup-py.outputs.python-path }} -m tox
