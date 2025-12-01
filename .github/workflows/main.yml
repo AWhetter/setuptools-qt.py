@@ -13,11 +13,11 @@ jobs:
         platform: [ubuntu-20.04, macos-13, windows-2022]
     runs-on: ${{ matrix.platform }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         id: setup-py
         with:
           python-version: ${{ matrix.python-version }}
